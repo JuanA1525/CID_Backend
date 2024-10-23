@@ -1,7 +1,9 @@
 class Equipment < ApplicationRecord
+  # Associations
   belongs_to :institution
   belongs_to :sport
 
+  # Enums
   enum equipment_type: {
     helmets: 0,
     knee_pads: 1,
@@ -34,4 +36,11 @@ class Equipment < ApplicationRecord
     bad: 4,
     unusable: 5
   }
+
+  # Validations
+  validates :equipment_type, presence: true
+  validates :condition, presence: true
+  validates :available, inclusion: { in: [true, false] }
+  validates :institution, presence: true
+  validates :sport, presence: true
 end
