@@ -1,0 +1,132 @@
+classDiagram
+    class InstitucionEducativa {
+        -nombre: String
+        -direccion: String
+        -ciudad: String
+        -departamento: String
+        -listaUsuario: Usuario
+        -inventario: Inventario
+        +InstitucionEducativa(nombre: String, direccion: String, ciudad: String, departamento: String)
+    }
+
+    class Inventario {
+        -id: Int
+        -capacidad: Int
+        -listaImplementos: Implemento
+        +Inventario(id: Int, capacidad: Int, listaImplementos: Implemento)
+        +agregarImplemento(implemento: Implemento): void
+        +removerImplemento(implemento: Implemento): void
+        +actualizarInventario(): void
+    }
+
+    class Usuario {
+        <<abstract>>
+        -tipo_documento: Enum
+        -id: String
+        -nombre: String
+        -email: String
+        -contraseña: String
+        -ocupación: Enum
+        -estado: Boolean
+        -prestamo: Prestamo
+        -calificacion_pendiente: Boolean
+        +Usuario(tipo_documento: Enum, id: Int, nombre: String, email: String, contraseña: String, ocupación: Enum)
+        +login(email: String, contraseña: String): void
+        +logout(): void
+    }
+
+    class Prestatario {
+        +Prestatario()
+    }
+
+    class Administrador {
+        -listaReporte: Reporte
+        -listaMensaje: Mensaje
+        +Administrador()
+    }
+
+    class Calificacion {
+        -id: Int
+        -puntuacion: Enum
+        -comentario: String
+        +Calificacion(id: Int, puntuacion: Enum, comentario: String)
+    }
+
+    class Mensaje {
+        -id: Int
+        -contenido: String
+        -fecha: Date
+        -administrador: Administrador
+        -listaPrestatario: Prestatario
+        +Mensaje(id: Int, contenido: String, fecha: Date, administrador: Administrador, listaPrestatario: Prestatario)
+        +editar(administrador: Administrador): void
+        +eliminar(administrador: Administrador): void
+        +observar(administrador: Administrador): void
+    }
+
+    class Prestamo {
+        -id: Int
+        -fechaPrestamo: Date
+        -fechaDevolucion: Date
+        -implemento: Implemento
+        -prestatario: Usuario
+        -administrador: Administrador
+        -calificacion: Calificacion
+        +Prestamo(id: Int, fechaPrestamo: Date, fechaDevolucion: Date, implemento: Implemento, prestatario: Usuario, administrador: Administrador)
+        +editar(administrador: Administrador): void
+        +eliminar(administrador: Administrador): void
+        +observar(administrador: Administrador): void
+    }
+
+    class Implemento {
+        -id: Int
+        -tipo: Enum
+        -deporte: Deporte
+        -estado: Enum
+        -prestado: Boolean
+        +Implemento(id: Int, nombre: String, deporte: Deporte, estado: String)
+        +actualizarEstado(): void
+    }
+
+    class Deporte {
+        -id: Int
+        -nombre: String
+        -descripcion: String
+        +Deporte(id: Int, nombre: String, descripcion: String)
+    }
+
+    class Reporte {
+        -id: Int
+        -tipo: Enum
+        -fecha: Date
+        -autor: Administrador
+        -implemento: Implemento
+        +Reporte(id: Int, tipo: String, fecha: Date, administrador: Administrador, implemento: Implemento)
+        +editar(administrador: Administrador): void
+        +eliminar(administrador: Administrador): void
+        +observar(administrador: Administrador): void
+    }
+
+    class PQRS {
+        -id: Int
+        -tipo: Enum
+        -descripcion: String
+        -prestatario: Prestatario
+        -implemento: Implemento
+        +PQRS(id: Int, tipo: Enum, descripcion: String, prestatario: Prestatario, implemento: Implemento)
+        +observar(prestatario: Usuario): void
+    }
+
+    InstitucionEducativa "1" *-- "1" Inventario
+    InstitucionEducativa "1" o-- "1..*" Usuario
+    Usuario <|-- Prestatario
+    Usuario <|-- Administrador
+    Prestatario "1" -- "1" Prestamo
+    Prestamo "1" -- "1" Implemento
+    Prestamo "1" o-- "1" Calificacion
+    Inventario "1" o-- "1..*" Implemento
+    Administrador "1" -- "0..*" Mensaje
+    Administrador "1" -- "0..*" Reporte
+    Prestatario "1" -- "0..*" PQRS
+    Administrador "1" -- "1" Prestamo
+    Implemento "1" o-- "1" Deporte

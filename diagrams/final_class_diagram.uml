@@ -1,0 +1,182 @@
+# Enumeraciones
+enum RolUsuario {
+    administrador
+    prestatario
+}
+
+enum EstadoUsuario {
+    activo
+    inactivo
+    suspendido
+}
+
+enum OcupacionUsuario {
+    estudiante
+    visitante
+    egresado
+}
+
+enum TipoImplemento {
+    cascos
+    rodilleras
+    coderas
+    chalecos
+    protectores
+    pesas
+    mancuernas
+    bandas_elásticas
+    colchoneta
+    cuerda
+    balones_medicinales
+    redes
+    canastas
+    metas
+    aros
+    pelotas
+    raquetas
+    palos
+    tablas
+    máscaras
+    guantes
+}
+
+enum EstadoImplemento {
+    perfecto
+    bueno
+    aceptable
+    regular
+    malo
+    inutilizable
+}
+
+enum PrestamoEstado {
+    activo
+    devuelto
+    vencido
+}
+
+enum PQRSFTipo {
+    peticion
+    queja
+    reclamo
+    sugerencia
+    felicitacion
+}
+
+enum TipoMensaje {
+    alerta_devolucion
+    recordatorio_calificacion
+    notificacion_general
+    aviso_suspension
+}
+
+# Clases
+class Usuario {
+    int id
+    String nombre
+    String email
+    String contraseña
+    OcupacionUsuario ocupacion
+    EstadoUsuario estado
+    boolean notificacionPendiente
+    InstitucionEducativa institucion
+    List<RolUsuario> roles
+
+    // Métodos adicionales para gestión de notificaciones y roles
+}
+
+class InstitucionEducativa {
+    int id
+    String nombre
+    String direccion
+    String ciudad
+    String departamento
+    List<Usuario> usuarios
+    List<Implemento> implementos
+
+    // Métodos adicionales para gestión de usuarios e implementos
+}
+
+class Deporte {
+    int id
+    String nombre
+    String descripcion
+    List<Implemento> implementos
+
+    // Métodos adicionales para gestionar implementos asociados
+}
+
+class Implemento {
+    int id
+    TipoImplemento tipo
+    EstadoImplemento estado
+    boolean disponible
+    InstitucionEducativa institucion
+    Deporte deporte
+    List<HistorialEstadoImplemento> historialEstados
+
+    // Métodos adicionales para cambiar estado y verificar disponibilidad
+}
+
+class Prestamo {
+    int id
+    Usuario usuario
+    Implemento implemento
+    Date fechaPrestamo
+    Date fechaLimiteDevolucion
+    Date fechaDevolucion
+    PrestamoEstado estado
+    String observaciones
+    Calificacion calificacion
+
+    // Métodos adicionales para gestionar la devolución y estado del préstamo
+}
+
+class Calificacion {
+    int id
+    Prestamo prestamo
+    int puntuacion
+    String comentario
+
+    // Métodos adicionales para calcular estadísticas de calificación
+}
+
+class PQRSF {
+    int id
+    Usuario usuario
+    PQRSFTipo tipo
+    String descripcion
+    DateTime fecha
+
+    // Métodos adicionales para gestión de respuestas a PQRSF
+}
+
+class Mensaje {
+    int id
+    Usuario administrador
+    TipoMensaje tipo
+    DateTime fechaCreacion
+    String contenido
+    List<Usuario> destinatarios
+
+    // Métodos para gestionar el envío y la recepción de mensajes
+}
+
+class Log {
+    int id
+    Usuario usuario
+    String accion
+    DateTime fecha
+
+    // Métodos para registrar y buscar logs
+}
+
+class HistorialEstadoImplemento {
+    int id
+    Implemento implemento
+    EstadoImplemento estadoAnterior
+    EstadoImplemento nuevoEstado
+    DateTime fechaCambio
+
+    // Métodos para gestionar el historial de cambios
+}

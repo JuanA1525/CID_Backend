@@ -1,0 +1,220 @@
+// Uso de enumeraciones
+Enum rol_usuario {
+  administrador
+  prestatario
+}
+
+Enum estado_usuario{
+  activo
+  inactivo
+  suspendido
+}
+
+// Enum para la ocupación del usuario
+Enum ocupación_usuario{
+  estudiante
+  visitante
+  egresado
+}
+
+// Enum para tipo de implemento
+Enum tipo_implemento{
+  cascos
+  rodilleras
+  coderas
+  chalecos
+  protectores
+  pesas
+  mancuernas
+  bandas_elásticas
+  colchoneta
+  cuerda
+  balones_medicinales
+  redes
+  canastas
+  metas
+  aros
+  pelotas
+  raquetas
+  palos
+  tablas
+  máscaras
+  guantes
+}
+
+Enum prestamo_estado {
+  activo
+  devuelto
+  vencido
+}
+
+Enum pqrsf_tipo {
+  peticion
+  queja
+  reclamo
+  sugerencia
+  felicitacion
+}
+
+Enum reporte_tipo {
+  inventario
+  prestamos
+}
+
+Enum estado_implemento {
+  perfecto
+  bueno
+  aceptable
+  regular
+  malo
+  inutilizable
+}
+
+// Nuevo enum para el tipo de mensaje
+Enum tipo_mensaje {
+  alerta_devolucion
+  recordatorio_calificacion
+  notificacion_general
+  aviso_suspension
+}
+
+// Tablas
+Table USUARIOS {
+  id int [pk, not null, note: "Id del usuario"]
+  institucion_educativa_id int [not null, note: "Id de la institución educativa a la que pertenece el usuario "]
+  nombre varchar(50) [not null, note: "Nombre el usuario"]
+  ocupacion ocupación_usuario [note: "Ocupación del prestatario si es visitante"]
+  email varchar [not null ,note: "Correo del usuario"]
+  contraseña varchar [not null, note: "Contraseña del usuario"]
+  estado estado_usuario [not null, note: "Estado del usuario dependiendo de si tiene suspensión o baneo"]
+  notificacion_pendiente boolean [not null, default: false, note: "Indica si el usuario tiene una calificación pendiente de realizar"]
+
+  Note: "Usuarios que interactúan con el sistema"
+}
+
+Table DEPORTES {
+  id int [pk, not null, note: "Id del deporte"]
+  nombre varchar(50) [not null, note: "Nombre del deporte"]
+  descripcion varchar(255) [note: "Descripción del deporte"]
+
+  Note: "Deportes a los que pertenecen los implementos"
+}
+
+Table IMPLEMENTOS {
+  id int [pk, not null, note:"Id del implemento"]
+  tipo tipo_implemento [not null, note: "Tipo del implemento"]
+  estado estado_implemento [not null, note: "Estado en el que se encuentra el implemento"]
+  disponible boolean [not null, note: "Permite saber si el implemento está disponible o no"]
+  institucion_educativa_id int [not null, note: "Id de la institución al que pertenece el implemento"]
+  deporte_id int [not null, note: "Id del deporte al que pertenece el implemento"]
+
+  Note: "Implementos que se pueden prestar"
+}
+
+Table PRESTAMOS {
+  id int [pk, not null, note: "Id del préstamo"]
+  usuario_id int  [not null, note:"Id del usuario que realiza el préstamo"]
+  implemento_id int  [not null, note: "Id del implemento que se está prestando"]
+  fecha_prestamo date [not null, note: "Fecha en la que se realizó el préstamo"]
+  fecha_limite_devolucion date [not null, note: "Fecha de devolución límite"]
+  fecha_devolucion date [null, note: "Fecha de devolución del préstamo"]
+  estado prestamo_estado [not null, note: "Estado del préstamo"]
+  observaciones varchar [null, note: "Observaciones sobre el préstamo"]
+
+  Note: "Préstamos realizados por los usuarios"
+}
+
+Table CALIFICACIONES {
+  id int [pk, not null, note: "Id de la calificación"]
+  prestamo_id int [not null, note: "Id del préstamo al que se le realiza la calificación"]
+  puntuacion int [not null, note: "Puntuación otorgada"]
+  comentario varchar [note: "Comentario adicional a la puntuación"]
+
+  Note: "Calificación otorgada al servicio"
+}
+
+Table PQRSF {
+  id int [pk, not null, note: "Id del PQRSF"]
+  usuario_id int [not null, note: "Id del usuario"]
+  tipo pqrsf_tipo [not null, note: "Tipo de la PQRSF"]
+  descripcion varchar(300) [not null, note: "Descripción del PQRSF"]
+  fecha datetime [not null, note: "Fecha de creación del PQRSF"]
+
+  Note: "Tabla de Peticiones, Quejas, Reclamos, Sugerencias y Felicitaciones"
+}
+
+Table INSTITUCIONES_EDUCATIVAS {
+  id int [pk, not null, note: "Id de la institución educativa"]
+  nombre varchar [not null, note: "Nombre de la institución educativa"]
+  direccion varchar [not null, note: "Dirección de la institución educativa"]
+  ciudad varchar [not null, note: "Ciudad de la institución educativa"]
+  departamento varchar [not null, note: "Departamento de la institución educativa"]
+
+  Note: "Institución Educativa donde se implementa el sistema"
+}
+
+Table ROLES {
+  id int [pk, not null, note: "Id del Rol de usuario"]
+  nombre rol_usuario [not null, note: "Rol de usuario"]
+
+  Note: "Tipos de usuarios"
+}
+
+Table USUARIOS_POR_ROL {
+  usuario_id int [pk, not null, note: "Id del usuario"]
+  rol_id int [pk, not null, note: "Id del rol del usuario"]
+
+  Note: "Relación de los usuarios con sus roles"
+}
+
+Table MENSAJES {
+  id_mensaje int [pk, not null, note: "Id del mensaje"]
+  id_administrador int [not null, note: "Id del administrador que envió el mensaje"]
+  tipo_mensaje tipo_mensaje [not null, note: "Tipo de mensaje generado por el sistema"]
+  fecha_creacion datetime [not null, note: "Fecha en la que se creó el mensaje"]
+  mensaje varchar(500) [not null, note: "Contenido del mensaje enviado por el administrador"]
+
+  Note: "Mensajes enviados hacia los usuarios"
+}
+
+Table MENSAJES_POR_USUARIO {
+  id_mensaje int [pk, not null, note: "Id del mensaje"]
+  id_usuario int [pk, not null, note: "Id del usuario que recibe el mensaje"]
+
+  Note: "Tabla que relaciona mensajes enviados con los usuarios"
+}
+
+Table LOGS {
+  id int [pk, not null, note: "Id del log"]
+  usuario_id int [not null, note: "Id del usuario que realizó la acción"]
+  accion varchar(255) [not null, note: "Descripción de la acción realizada"]
+  fecha datetime [not null, note: "Fecha en la que se realizó la acción"]
+
+  Note: "Registro de acciones importantes en el sistema"
+}
+
+Table HISTORIAL_ESTADO_IMPLEMENTOS {
+  id int [pk, not null, note: "Id del historial"]
+  implemento_id int [not null, note: "Id del implemento"]
+  estado_anterior estado_implemento [not null, note: "Estado anterior del implemento"]
+  nuevo_estado estado_implemento [not null, note: "Nuevo estado del implemento"]
+  fecha_cambio datetime [not null, note: "Fecha en la que se cambió el estado"]
+
+  Note: "Historial de cambios de estado de los implementos"
+}
+
+// Claves primarias y foráneas
+Ref: CALIFICACIONES.prestamo_id > PRESTAMOS.id
+Ref: PRESTAMOS.usuario_id > USUARIOS.id
+Ref: PRESTAMOS.implemento_id > IMPLEMENTOS.id
+Ref: PQRSF.usuario_id > USUARIOS.id
+Ref: IMPLEMENTOS.institucion_educativa_id > INSTITUCIONES_EDUCATIVAS.id
+Ref: USUARIOS.institucion_educativa_id > INSTITUCIONES_EDUCATIVAS.id
+Ref: IMPLEMENTOS.deporte_id > DEPORTES.id
+Ref: USUARIOS_POR_ROL.usuario_id > USUARIOS.id
+Ref: USUARIOS_POR_ROL.rol_id > ROLES.id
+Ref: MENSAJES.id_administrador > USUARIOS.id
+Ref: MENSAJES_POR_USUARIO.id_mensaje > MENSAJES.id_mensaje
+Ref: MENSAJES_POR_USUARIO.id_usuario > USUARIOS.id
+Ref: LOGS.usuario_id > USUARIOS.id
+Ref: HISTORIAL_ESTADO_IMPLEMENTOS.implemento_id > IMPLEMENTOS.id
