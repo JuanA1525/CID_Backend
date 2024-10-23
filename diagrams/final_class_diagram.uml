@@ -14,6 +14,7 @@ enum OcupacionUsuario {
     estudiante
     visitante
     egresado
+    empleado
 }
 
 enum TipoImplemento {
@@ -80,8 +81,7 @@ class Usuario {
     EstadoUsuario estado
     boolean notificacionPendiente
     InstitucionEducativa institucion
-    List<RolUsuario> roles
-
+    List<Roles> roles
     // Métodos adicionales para gestión de notificaciones y roles
 }
 

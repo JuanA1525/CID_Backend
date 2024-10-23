@@ -1,0 +1,155 @@
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
+  create_table "equipment", force: :cascade do |t|
+    t.integer "equipment_type", null: false
+    t.integer "condition", default: 0, null: false
+    t.boolean "available", default: true, null: false
+    t.bigint "institution_id", null: false
+    t.bigint "sport_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["institution_id"], name: "index_equipment_on_institution_id"
+    t.index ["sport_id"], name: "index_equipment_on_sport_id"
+  end
+
+  create_table "equipment_state_histories", force: :cascade do |t|
+    t.bigint "equipment_id", null: false
+    t.integer "previous_condition", null: false
+    t.integer "new_condition", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["equipment_id"], name: "index_equipment_state_histories_on_equipment_id"
+  end
+
+  create_table "institutions", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "address", null: false
+    t.string "city", null: false
+    t.string "departament", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "loans", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "equipment_id", null: false
+    t.datetime "loan_date", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "return_due_date", null: false
+    t.datetime "return_date"
+    t.integer "status", default: 0, null: false
+    t.text "remark"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["equipment_id"], name: "index_loans_on_equipment_id"
+    t.index ["user_id"], name: "index_loans_on_user_id"
+  end
+
+  create_table "logs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_logs_on_user_id"
+  end
+
+  create_table "message_recipients", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_recipients_on_message_id"
+    t.index ["user_id"], name: "index_message_recipients_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "message_type", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
+  create_table "pqrsfs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "pqrsf_type", null: false
+    t.text "description", null: false
+    t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pqrsfs_on_user_id"
+  end
+
+  create_table "ratings", force: :cascade do |t|
+    t.bigint "loan_id", null: false
+    t.integer "score", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["loan_id"], name: "index_ratings_on_loan_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.integer "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "sports", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.integer "occupation", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.boolean "notification_pending", default: false
+    t.bigint "institution_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["institution_id"], name: "index_users_on_institution_id"
+  end
+
+  add_foreign_key "equipment", "institutions"
+  add_foreign_key "equipment", "sports"
+  add_foreign_key "equipment_state_histories", "equipment"
+  add_foreign_key "loans", "equipment"
+  add_foreign_key "loans", "users"
+  add_foreign_key "logs", "users"
+  add_foreign_key "message_recipients", "messages"
+  add_foreign_key "message_recipients", "users"
+  add_foreign_key "messages", "users"
+  add_foreign_key "pqrsfs", "users"
+  add_foreign_key "ratings", "loans"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "institutions"
+end

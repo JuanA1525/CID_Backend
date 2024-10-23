@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  pqrsf_type: 1
+  description: MyText
+  date: 2024-10-23 16:19:56
+
+two:
+  user: two
+  pqrsf_type: 1
+  description: MyText
+  date: 2024-10-23 16:19:56

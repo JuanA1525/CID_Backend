@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  equipment_type: 1
+  condition: 1
+  available: false
+  institution: one
+  sport: one
+
+two:
+  equipment_type: 1
+  condition: 1
+  available: false
+  institution: two
+  sport: two

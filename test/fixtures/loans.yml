@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  equipment: one
+  loan_date: 2024-10-23 16:06:49
+  return_due_date: 2024-10-23 16:06:49
+  return_date: 2024-10-23 16:06:49
+  status: 1
+  remark: MyText
+
+two:
+  user: two
+  equipment: two
+  loan_date: 2024-10-23 16:06:49
+  return_due_date: 2024-10-23 16:06:49
+  return_date: 2024-10-23 16:06:49
+  status: 1
+  remark: MyText
