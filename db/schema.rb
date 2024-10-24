@@ -10,24 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_24_054440) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_24_154646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "condition", ["perfect", "good", "acceptable", "fair", "bad", "unusable"]
+  create_enum "equipment_type", ["helmets", "knee_pads", "elbow_pads", "vests", "protectors", "weights", "dumbbells", "elastic_bands", "mat", "rope", "medicine_balls", "nets", "baskets", "goals", "hoops", "balls", "rackets", "sticks", "boards", "masks", "gloves"]
   create_enum "name", ["administrator", "borrower"]
   create_enum "occupation", ["student", "visitor", "graduated", "employee"]
   create_enum "role", ["admin", "borrower"]
   create_enum "status", ["active", "inactive", "suspended"]
-  create_enum "type", ["helmets", "knee_pads", "elbow_pads", "vests", "protectors", "weights", "dumbbells", "elastic_bands", "mat", "rope", "medicine_balls", "nets", "baskets", "goals", "hoops", "balls", "rackets", "sticks", "boards", "masks", "gloves"]
 
   create_table "equipment", force: :cascade do |t|
-    t.enum "type", null: false, enum_type: "type"
+    t.enum "equipment_type", null: false, enum_type: "equipment_type"
     t.enum "condition", default: "perfect", null: false, enum_type: "condition"
     t.boolean "available", default: true, null: false
-    t.bigint "institution_id", null: false
+    t.bigint "institution_id", default: 1
     t.bigint "sport_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,7 +86,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_054440) do
 
   create_table "messages", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.enum "type", null: false, enum_type: "type"
+    t.enum "type", null: false, enum_type: "equipment_type"
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -95,7 +95,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_054440) do
 
   create_table "pqrsfs", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.enum "type", null: false, enum_type: "type"
+    t.enum "type", null: false, enum_type: "equipment_type"
     t.text "description", null: false
     t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
@@ -110,12 +110,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_054440) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["loan_id"], name: "index_ratings_on_loan_id"
-  end
-
-  create_table "roles", force: :cascade do |t|
-    t.string "name", default: "borrower", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "sports", force: :cascade do |t|

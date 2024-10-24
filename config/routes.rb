@@ -14,21 +14,33 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      #User routes
+      # User routes
       post "users/sign_up" => "users#create"
       get "users" => "users#index"
       delete "users/delete/:id" => "users#destroy"
       put "users/update" => "users#update"
       get "users/:id" => "users#show"
 
-      resources :users, only: [:index, :show, :create, :update, :destroy]
+      resources :users, only: [ :index, :show, :create, :update, :destroy ]
 
-      #Authentication routes
+      # Authentication routes
       post "login" => "authentication#login"
       delete "logout" => "authentication#logout"
       get "current_user_info" => "authentication#current_user_info"
 
+      # Sport routes
+      get "sports" => "sports#index"
+      post "sports" => "sports#create"
+      put "sports" => "sports#update"
+      delete "sports" => "sports#destroy"
+      get "sports/:id" => "sports#show"
+
+      # Equipment routes
+      get "equipment" => "equipment#index"
+      post "equipment" => "equipment#create"
+      put "equipment/:id" => "equipment#update"
+      delete "equipment" => "equipment#destroy"
+      get "equipment/:id" => "equipment#show"
     end
   end
-
 end
