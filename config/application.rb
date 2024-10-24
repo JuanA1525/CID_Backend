@@ -19,7 +19,8 @@ module CidBackend
         resource "*",
           headers: :any,
           methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
-          credentials: false
+          credentials: false,
+          expose: [ "Authorization" ]
       end
     end
 
