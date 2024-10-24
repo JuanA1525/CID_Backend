@@ -3,15 +3,15 @@ class Message < ApplicationRecord
   belongs_to :user
 
   # Enums
-  enum message_type: {
-    return_alert: 0,
-    rating_reminder: 1,
-    general_notification: 2,
-    suspension_notice: 3
+  enum :type, {
+    return_alert: 'return_alert',
+    rating_reminder: 'rating_reminder',
+    general_notification: 'general_notification',
+    suspension_notice: 'suspension_notice'
   }
 
   # Validations
   validates :user, presence: true
-  validates :message_type, presence: true
+  validates :type, presence: true
   validates :content, presence: true
 end

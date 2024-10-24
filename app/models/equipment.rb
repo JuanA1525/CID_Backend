@@ -4,38 +4,38 @@ class Equipment < ApplicationRecord
   belongs_to :sport
 
   # Enums
-  enum equipment_type: {
-    helmets: 0,
-    knee_pads: 1,
-    elbow_pads: 2,
-    vests: 3,
-    protectors: 4,
-    weights: 5,
-    dumbbells: 6,
-    elastic_bands: 7,
-    mat: 8,
-    rope: 9,
-    medicine_balls: 10,
-    nets: 11,
-    baskets: 12,
-    goals: 13,
-    hoops: 14,
-    balls: 15,
-    rackets: 16,
-    sticks: 17,
-    boards: 18,
-    masks: 19,
-    gloves: 20
+  enum :type, {
+    helmets: 'helmets',
+    knee_pads: 'knee_pads',
+    elbow_pads: 'elbow_pads',
+    vests: 'vests',
+    protectors: 'protectors',
+    weights: 'weights',
+    dumbbells: 'dumbbells',
+    elastic_bands: 'elastic_bands',
+    mat: 'mat',
+    rope: 'rope',
+    medicine_balls: 'medicine_balls',
+    nets: 'nets',
+    baskets: 'baskets',
+    goals: 'goals',
+    hoops: 'hoops',
+    balls: 'balls',
+    rackets: 'rackets',
+    sticks: 'sticks',
+    boards: 'boards',
+    masks: 'masks',
+    gloves: 'gloves'
   }
 
-  enum equipment_condition: {
-    perfect: 0,
-    good: 1,
-    acceptable: 2,
-    fair: 3,
-    bad: 4,
-    unusable: 5
-  }
+  enum :condition, {
+    perfect: 'perfect',
+    good: 'good',
+    acceptable: 'acceptable',
+    fair: 'fair',
+    bad: 'bad',
+    unusable: 'unusable'
+  }, default: 'perfect'
 
   # Validations
   validates :equipment_type, presence: true

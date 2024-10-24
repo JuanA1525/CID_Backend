@@ -4,7 +4,11 @@ class Loan < ApplicationRecord
   belongs_to :equipment
 
   # Enums
-  enum loan_status: { active: 0, returned: 1, expired: 2 }
+  enum :status, {
+    active: 'active',
+    returned: 'returned',
+    expired: 'expired'
+  }, default: 'active'
 
   # Validations
   validates :user, presence: true

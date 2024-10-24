@@ -10,13 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_24_054440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "condition", ["perfect", "good", "acceptable", "fair", "bad", "unusable"]
+  create_enum "name", ["administrator", "borrower"]
+  create_enum "occupation", ["student", "visitor", "graduated", "employee"]
+  create_enum "role", ["admin", "borrower"]
+  create_enum "status", ["active", "inactive", "suspended"]
+  create_enum "type", ["helmets", "knee_pads", "elbow_pads", "vests", "protectors", "weights", "dumbbells", "elastic_bands", "mat", "rope", "medicine_balls", "nets", "baskets", "goals", "hoops", "balls", "rackets", "sticks", "boards", "masks", "gloves"]
+
   create_table "equipment", force: :cascade do |t|
-    t.integer "equipment_type", null: false
-    t.integer "condition", default: 0, null: false
+    t.enum "type", null: false, enum_type: "type"
+    t.enum "condition", default: "perfect", null: false, enum_type: "condition"
     t.boolean "available", default: true, null: false
     t.bigint "institution_id", null: false
     t.bigint "sport_id", null: false
@@ -50,7 +59,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
     t.datetime "loan_date", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "return_due_date", null: false
     t.datetime "return_date"
-    t.integer "status", default: 0, null: false
+    t.enum "status", default: "active", null: false, enum_type: "status"
     t.text "remark"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -77,7 +86,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
 
   create_table "messages", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.integer "message_type", null: false
+    t.enum "type", null: false, enum_type: "type"
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,7 +95,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
 
   create_table "pqrsfs", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.integer "pqrsf_type", null: false
+    t.enum "type", null: false, enum_type: "type"
     t.text "description", null: false
     t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
@@ -104,7 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
   end
 
   create_table "roles", force: :cascade do |t|
-    t.integer "name", null: false
+    t.string "name", default: "borrower", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -116,25 +125,17 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_roles", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "role_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["role_id"], name: "index_user_roles_on_role_id"
-    t.index ["user_id"], name: "index_user_roles_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
     t.string "password_digest", null: false
-    t.integer "occupation", default: 0, null: false
-    t.integer "status", default: 0, null: false
+    t.enum "occupation", default: "student", null: false, enum_type: "occupation"
+    t.enum "status", default: "active", null: false, enum_type: "status"
     t.boolean "notification_pending", default: false
     t.bigint "institution_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "role", default: "borrower", null: false, enum_type: "role"
     t.index ["institution_id"], name: "index_users_on_institution_id"
   end
 
@@ -149,7 +150,5 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_23_214825) do
   add_foreign_key "messages", "users"
   add_foreign_key "pqrsfs", "users"
   add_foreign_key "ratings", "loans"
-  add_foreign_key "user_roles", "roles"
-  add_foreign_key "user_roles", "users"
   add_foreign_key "users", "institutions"
 end

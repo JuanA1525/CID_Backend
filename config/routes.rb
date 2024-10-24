@@ -11,4 +11,24 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  namespace :api do
+    namespace :v1 do
+      #User routes
+      post "users/sign_up" => "users#create"
+      get "users" => "users#index"
+      delete "users/delete/:id" => "users#destroy"
+      put "users/update" => "users#update"
+      get "users/:id" => "users#show"
+
+      resources :users, only: [:index, :show, :create, :update, :destroy]
+
+      #Authentication routes
+      post "login" => "authentication#login"
+      delete "logout" => "authentication#logout"
+      get "current_user_info" => "authentication#current_user_info"
+
+    end
+  end
+
 end
