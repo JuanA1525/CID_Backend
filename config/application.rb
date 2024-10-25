@@ -14,13 +14,13 @@ module CidBackend
     # Configurar CORS
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins "*"  # Permitir solicitudes desde cualquier origen
+        origins "*"
 
         resource "*",
           headers: :any,
           methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
-          credentials: false,
-          expose: [ "Authorization" ]
+          expose: [ "Authorization" ],
+          credentials: false
       end
     end
 
