@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       # Sport routes
       get "sports" => "sports#index"
       post "sports" => "sports#create"
-      put "sports" => "sports#update"
+      put "sports/:id" => "sports#update"
       delete "sports" => "sports#destroy"
       get "sports/:id" => "sports#show"
 
