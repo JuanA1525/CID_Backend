@@ -1,5 +1,5 @@
 class Api::V1::SportsController < ApplicationController
-  # before_action :set_sport, only: %i[ show update destroy ]
+  before_action :set_sport, only: %i[ show update destroy ]
 
   # GET /sports
   def index
@@ -27,10 +27,14 @@ class Api::V1::SportsController < ApplicationController
   # PATCH/PUT /sports/1
   def update
     if @sport.update(sport_params)
-      render json: @sport
+      render json: @sport, status: :ok
     else
-      render json: @sport.errors, status: :unprocessable_entity
+      render json: { errors: @sport.errors.full_messages }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Sport not found" }, status: :not_found
+  rescue StandardError => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   # DELETE /sports/1
