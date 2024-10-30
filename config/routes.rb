@@ -41,6 +41,13 @@ Rails.application.routes.draw do
       put "equipment/:id" => "equipment#update"
       delete "equipment" => "equipment#destroy"
       get "equipment/:id" => "equipment#show"
+
+      # Loan routes
+      get "loans" => "loan#index"
+      post "loans" => "loan#create"
+      put "loans/:id" => "loan#update"
+      delete "loans" => "loan#destroy"
+      get "loans/:id" => "loan#show"
     end
   end
 end

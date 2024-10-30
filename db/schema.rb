@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_24_154646) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_30_232324) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,6 +18,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_154646) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "condition", ["perfect", "good", "acceptable", "fair", "bad", "unusable"]
   create_enum "equipment_type", ["helmets", "knee_pads", "elbow_pads", "vests", "protectors", "weights", "dumbbells", "elastic_bands", "mat", "rope", "medicine_balls", "nets", "baskets", "goals", "hoops", "balls", "rackets", "sticks", "boards", "masks", "gloves"]
+  create_enum "loan_status", ["active", "returned", "expired"]
   create_enum "name", ["administrator", "borrower"]
   create_enum "occupation", ["student", "visitor", "graduated", "employee"]
   create_enum "role", ["admin", "borrower"]
@@ -59,10 +60,10 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_154646) do
     t.datetime "loan_date", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "return_due_date", null: false
     t.datetime "return_date"
-    t.enum "status", default: "active", null: false, enum_type: "status"
     t.text "remark"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "status", default: "active", null: false, enum_type: "loan_status"
     t.index ["equipment_id"], name: "index_loans_on_equipment_id"
     t.index ["user_id"], name: "index_loans_on_user_id"
   end
