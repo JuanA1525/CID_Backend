@@ -1,26 +1,22 @@
 class Api::V1::AuthenticationController < ApplicationController
-  skip_before_action :authenticate_request, only: [ :login, :logout, :current_user_info ]
-
-  def logout
-    session[:user_id] = nil
-    render json: { message: "Logged Out" }, status: :created
-  end
+  skip_before_action :authenticate_request, only: %i[login logout current_user_info]
 
   def login
-    @user = User.find_by(email: params[:email])
-    if @user.present? && @user.authenticate(params[:password])
-      token = jwt_encode(user_id: @user.id)
-      render json: @user.as_json.merge(token: token), status: :ok
+    result = AuthService.login(params[:email], params[:password])
+    if result[:user]
+      render json: result[:user].as_json.merge(token: result[:token]), status: result[:status]
     else
-      render json: { errors: "Invalid email or password" }, status: :unauthorized
+      render json: { errors: result[:error] }, status: result[:status]
     end
+  end
+
+  def logout
+    result = AuthService.logout(session)
+    render json: { message: result[:message] }, status: result[:status]
   end
 
   def current_user_info
-    if @current_user
-      render json: @current_user, status: :ok
-    else
-      render json: { error: "No current user" }, status: :not_found
-    end
+    result = AuthService.current_user_info(@current_user)
+    render json: result[:user] || { error: result[:error] }, status: result[:status]
   end
 end

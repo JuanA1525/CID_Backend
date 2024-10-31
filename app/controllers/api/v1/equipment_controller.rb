@@ -1,74 +1,52 @@
+# app/controllers/api/v1/equipment_controller.rb
+
 class Api::V1::EquipmentController < ApplicationController
   before_action :set_equipment, only: %i[ show update destroy ]
 
-  # GET /equipment
   def index
-    @equipment = Equipment.all
-
-    equipment_with_names = @equipment.map do |equipment|
-      name = "#{equipment.equipment_type}_#{equipment.sport.name}_#{equipment.id}"
-      sport = "#{equipment.sport.name}"
-      equipment.as_json.merge(name: name, sport: sport)
-    end
-
-    render json: equipment_with_names
+    render json: EquipmentService.index
   end
 
   def available
-    @equipment = Equipment.includes(:sport).where(available: true)
-
-    equipment_with_names = @equipment.map do |equipment|
-      name = "#{equipment.equipment_type}_#{equipment.sport.name}_#{equipment.id}"
-      sport = equipment.sport.name
-      equipment.as_json.merge(name: name, sport: sport)
-    end
-
-    render json: equipment_with_names
+    render json: EquipmentService.available
   end
 
-  # GET /equipment/1
   def show
-    name = "#{@equipment.equipment_type}_#{@equipment.sport.name}_#{@equipment.id}"
-    sport = "#{@equipment.sport.name}"
-    render json: @equipment.as_json.merge(name: name, sport: sport)
+    render json: EquipmentService.show(@equipment)
   end
 
-  # POST /equipment
   def create
-    @equipment = Equipment.new(equipment_params)
-
-    if @equipment.save
-      name = "#{@equipment.equipment_type}_#{@equipment.sport.name}_#{@equipment.id}"
-      sport = "#{@equipment.sport.name}"
-      render json: @equipment.as_json.merge(name: name, sport: sport), status: :created
+    result = EquipmentService.create(equipment_params)
+    if result[:equipment]
+      render json: result[:equipment], status: result[:status]
     else
-      render json: @equipment.errors, status: :unprocessable_entity
+      render json: result[:errors], status: result[:status]
     end
   end
 
-  # PATCH/PUT /equipment/1
   def update
-    if @equipment.update(equipment_params)
-      name = "#{@equipment.equipment_type}_#{@equipment.sport.name}_#{@equipment.id}"
-      sport = "#{@equipment.sport.name}"
-      render json: @equipment.as_json.merge(name: name, sport: sport)
+    result = EquipmentService.update(@equipment, equipment_params)
+    if result[:equipment]
+      render json: result[:equipment], status: result[:status]
     else
-      render json: @equipment.errors, status: :unprocessable_entity
+      render json: result[:errors], status: result[:status]
     end
   end
 
-  # DELETE /equipment/1
   def destroy
-    @equipment.destroy
+    EquipmentService.destroy(@equipment)
+    head :no_content
   end
 
   private
 
-    def set_equipment
-      @equipment = Equipment.find(params[:id])
-    end
+  def set_equipment
+    @equipment = Equipment.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Equipment not found" }, status: :not_found
+  end
 
-    def equipment_params
-      params.require(:equipment).permit(:equipment_type, :condition, :sport_id, :available, :institution_id)
-    end
+  def equipment_params
+    params.require(:equipment).permit(:equipment_type, :condition, :sport_id, :available, :institution_id)
+  end
 end

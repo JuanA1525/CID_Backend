@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
 
     header = header.split(' ').last
     begin
-      decoded = jwt_decode(header)
+      decoded = JsonWebToken.jwt_decode(header)
     rescue JWT::DecodeError
       render json: { error: 'Invalid Authorization header' }, status: :unauthorized
       return

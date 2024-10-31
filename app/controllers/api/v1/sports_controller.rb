@@ -24,17 +24,16 @@ class Api::V1::SportsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /sports/1
   def update
     if @sport.update(sport_params)
       render json: @sport, status: :ok
     else
       render json: { errors: @sport.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "Sport not found" }, status: :not_found
-  rescue StandardError => e
-    render json: { error: e.message }, status: :internal_server_error
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Sport not found" }, status: :not_found
+    rescue StandardError => e
+      render json: { error: e.message }, status: :internal_server_error
   end
 
   # DELETE /sports/1
