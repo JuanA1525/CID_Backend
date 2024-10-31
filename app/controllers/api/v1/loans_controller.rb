@@ -2,46 +2,65 @@ class Api::V1::LoansController < ApplicationController
   before_action :set_loan, only: %i[ show update destroy ]
 
   def index
-    loans = Loan.includes(:user).all
-    render json: loans.as_json(include: :user)
+    loans = Loan.includes(:user, :equipment).all
+    render json: loans.as_json(include: [:user, :equipment])
   end
 
-  def create
-    @loan = Loan.new(loan_params)
-    if @loan.save
-      @equipment = Equipment.find(@loan.equipment_id)
-      @equipment.update(available: false)
+    def create
+    @equipment = Equipment.find(loan_params[:equipment_id])
 
-      render json: @loan, status: :created
+    if loan_params[:status] == "active" || loan_params[:status].nil?
+      if @equipment.available
+        @equipment.update(available: false)
+        @loan = Loan.new(loan_params)
+        if @loan.save
+          render json: @loan.as_json(include: [:user, :equipment]), status: :created
+        else
+          @equipment.update(available: true)
+          render json: @loan.errors, status: :unprocessable_entity
+        end
+      else
+        render json: { error: "Equipment is not available" }, status: :unprocessable_entity
+      end
     else
-      render json: @loan.errors, status: :unprocessable_entity
+      render json: { error: "Loan status must be 'active'" }, status: :unprocessable_entity
     end
   end
 
-  def update
-    if @loan.status == "returned"
+    def update
+    if loan_params[:status] == "returned"
       @loan.return_date = Time.current
       @equipment = Equipment.find(@loan.equipment_id)
-      @equipment.update(available: true)
-    end
-    if @loan.update(loan_params)
-      render json: @loan
+      if @equipment.update(available: true)
+        if @loan.update(loan_params)
+          render json: @loan.as_json(include: [:user, :equipment])
+        else
+          render json: @loan.errors, status: :unprocessable_entity
+        end
+      else
+        render json: { error: "Failed to update equipment availability" }, status: :unprocessable_entity
+      end
     else
-      render json: @loan.errors, status: :unprocessable_entity
+      if @loan.update(loan_params)
+        render json: @loan.as_json(include: [:user, :equipment])
+      else
+        render json: @loan.errors, status: :unprocessable_entity
+      end
     end
   end
 
   def show
-    @loan = Loan.includes(:user).find(params[:id])
-    render json: @loan.as_json(include: :user)
+    @loan = Loan.includes(:user, :equipment).find(params[:id])
+    render json: @loan.as_json(include: [:user, :equipment])
   end
 
   def destroy
     @loan.destroy
+    head :no_content
   end
 
   def return_all
-    loans = Loan.where(status: "active")
+    loans = Loan.includes(:equipment).where(status: "active")
     loans.each do |loan|
       loan.update(status: "returned", return_date: Time.current)
       loan.equipment.update(available: true)
@@ -56,7 +75,7 @@ class Api::V1::LoansController < ApplicationController
   end
 
   def set_loan
-    @loan = Loan.find(params[:id])
+    @loan = Loan.includes(:user, :equipment).find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Loan not found" }, status: :not_found
   end
