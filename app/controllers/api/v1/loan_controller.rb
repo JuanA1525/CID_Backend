@@ -9,6 +9,9 @@ class Api::V1::LoanController < ApplicationController
   def create
     @loan = Loan.new(loan_params)
     if @loan.save
+      @equipment = Equipment.find(@loan.equipment_id)
+      @equipment.update(available: false)
+
       render json: @loan, status: :created
     else
       render json: @loan.errors, status: :unprocessable_entity
@@ -18,6 +21,8 @@ class Api::V1::LoanController < ApplicationController
   def update
     if @loan.status == "returned"
       @loan.return_date = Time.current
+      @equipment = Equipment.find(@loan.equipment_id)
+      @equipment.update(available: true)
     end
     if @loan.update(loan_params)
       render json: @loan

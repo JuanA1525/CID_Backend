@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_30_232324) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_31_003938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -127,7 +127,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_30_232324) do
     t.enum "occupation", default: "student", null: false, enum_type: "occupation"
     t.enum "status", default: "active", null: false, enum_type: "status"
     t.boolean "notification_pending", default: false
-    t.bigint "institution_id", null: false
+    t.bigint "institution_id", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.enum "role", default: "borrower", null: false, enum_type: "role"

@@ -36,11 +36,11 @@ Rails.application.routes.draw do
       get "sports/:id" => "sports#show"
 
       # Equipment routes
-      get "equipment" => "equipment#index"
-      post "equipment" => "equipment#create"
-      put "equipment/:id" => "equipment#update"
-      delete "equipment" => "equipment#destroy"
-      get "equipment/:id" => "equipment#show"
+      resources :equipment do
+        collection do
+          get "available", to: "equipment#available"
+        end
+      end
 
       # Loan routes
       get "loans" => "loan#index"

@@ -14,6 +14,18 @@ class Api::V1::EquipmentController < ApplicationController
     render json: equipment_with_names
   end
 
+  def available
+    @equipment = Equipment.includes(:sport).where(available: true)
+
+    equipment_with_names = @equipment.map do |equipment|
+      name = "#{equipment.equipment_type}_#{equipment.sport.name}_#{equipment.id}"
+      sport = equipment.sport.name
+      equipment.as_json.merge(name: name, sport: sport)
+    end
+
+    render json: equipment_with_names
+  end
+
   # GET /equipment/1
   def show
     name = "#{@equipment.equipment_type}_#{@equipment.sport.name}_#{@equipment.id}"
