@@ -35,11 +35,15 @@ class User < ApplicationRecord
   validates :notification_pending, inclusion: { in: [true, false] }
 
   # Callbacks
-  before_validation :normalize_email
+  before_validation :normalize_email, :capitalize_name
 
   private
 
     def normalize_email
       self.email = email.strip.downcase if email.present?
+    end
+
+    def capitalize_name
+      self.name = name.split.map(&:capitalize).join(' ') if name.present?
     end
 end

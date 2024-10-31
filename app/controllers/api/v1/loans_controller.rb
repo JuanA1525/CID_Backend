@@ -1,9 +1,9 @@
-class Api::V1::LoanController < ApplicationController
+class Api::V1::LoansController < ApplicationController
   before_action :set_loan, only: %i[ show update destroy ]
 
   def index
-    loans = Loan.all
-    render json: loans
+    loans = Loan.includes(:user).all
+    render json: loans.as_json(include: :user)
   end
 
   def create
@@ -32,11 +32,21 @@ class Api::V1::LoanController < ApplicationController
   end
 
   def show
-    render json: @loan
+    @loan = Loan.includes(:user).find(params[:id])
+    render json: @loan.as_json(include: :user)
   end
 
   def destroy
     @loan.destroy
+  end
+
+  def return_all
+    loans = Loan.where(status: "active")
+    loans.each do |loan|
+      loan.update(status: "returned", return_date: Time.current)
+      loan.equipment.update(available: true)
+    end
+    render json: { message: "All loans returned" }, status: :ok
   end
 
   private

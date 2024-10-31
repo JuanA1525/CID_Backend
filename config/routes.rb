@@ -43,11 +43,11 @@ Rails.application.routes.draw do
       end
 
       # Loan routes
-      get "loans" => "loan#index"
-      post "loans" => "loan#create"
-      put "loans/:id" => "loan#update"
-      delete "loans" => "loan#destroy"
-      get "loans/:id" => "loan#show"
+      resources :loans do
+        collection do
+          put "return_all", to: "loans#return_all"
+        end
+      end
     end
   end
 end
