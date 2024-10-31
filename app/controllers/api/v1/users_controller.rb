@@ -1,6 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[ show update destroy ]
-  skip_before_action :authenticate_request, only: [:create]
+  skip_before_action :authenticate_request, only: [ :create ]
 
   # GET /users
   def index
@@ -20,7 +20,7 @@ class Api::V1::UsersController < ApplicationController
 
     if @user.save
       token = jwt_encode(user_id: @user.id)
-      render json: { token: token }, status: :ok
+      render json: { token: token }, status: :created
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
