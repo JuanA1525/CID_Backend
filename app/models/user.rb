@@ -28,7 +28,7 @@ class User < ApplicationRecord
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "It must be a valid email." }
   validates :name, presence: true
-  validates :password, presence: true, length: { minimum: 8 }
+  validates :password, presence: true, length: { minimum: 8 }, if: -> { new_record? || password.present? }
   validates :occupation, presence: true
   validates :status, presence: true
   validates :role, presence: true
@@ -37,6 +37,11 @@ class User < ApplicationRecord
 
   # Callbacks
   before_validation :normalize_email, :capitalize_name
+
+  # Methods
+  def admin?
+    role == 'admin'
+  end
 
   private
 

@@ -1,11 +1,11 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy ]
-  skip_before_action :authenticate_request, only: [ :create ]
+  before_action :set_user, only: %i[show update destroy]
+  before_action :authenticate_request, only: %i[update]
+  skip_before_action :authenticate_request, only: [:create]
 
   # GET /users
   def index
     @users = User.all
-
     render json: @users
   end
 
@@ -28,7 +28,24 @@ class Api::V1::UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params)
+    # Verificar si el usuario actual es un borrower y el ID en los parámetros corresponde a su propio ID
+    if @current_user.borrower? && @current_user.id != params[:id].to_i
+      return render json: { error: "You can only update your own profile" }, status: :forbidden
+    end
+
+    # Verificar si el usuario actual es admin
+    if @current_user.admin?
+      # Permitir actualización sin requerir contraseña
+      update_params = admin_update_params
+    else
+      # Verificar contraseña para usuarios no admin
+      unless @current_user.authenticate(params[:current_password])
+        return render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
+      end
+      update_params = borrower_update_params
+    end
+
+    if @user.update(update_params)
       render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -43,15 +60,30 @@ class Api::V1::UsersController < ApplicationController
 
   def get_loans
     loans = UserService.get_loans(params[:id])
-    render json: loans.as_json(include: [ :equipment ])
+    render json: loans.as_json(include: [:equipment])
   end
 
   private
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending, :role)
+  def set_user
+    @user = User.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "User not found" }, status: :not_found
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending, :role)
+  end
+
+  def admin_update_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :role, :institution_id, :notification_pending)
+  end
+
+  def borrower_update_params
+    if params[:user][:password].present? && params[:user][:password].blank?
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
     end
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending)
+  end
 end

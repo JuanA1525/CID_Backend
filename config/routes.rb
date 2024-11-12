@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       post "users/sign_up" => "users#create"
       get "users" => "users#index"
       delete "users/delete/:id" => "users#destroy"
-      put "users/update" => "users#update"
+      put "users/:id" => "users#update"
       get "users/:id" => "users#show"
       get "users/:id/loans" => "users#get_loans"
 
@@ -50,6 +50,16 @@ Rails.application.routes.draw do
           get "active", to: "loans#get_active_loans"
         end
       end
+
+      # Dashboard routes
+      get "dashboard/summary" => "dashboard#get_summary"
+      get "dashboard/loans_info" => "dashboard#get_loans_info"
+      get "dashboard/equipment_info" => "dashboard#get_equipment_info"
+      get "dashboard/equipment_per_sport" => "dashboard#get_equipment_per_sport"
+      get "dashboard/loans_per_month" => "dashboard#get_loans_per_month"
+      get "dashboard/loans_per_day" => "dashboard#get_loans_per_day"
+      get "dashboard/loans_per_week" => "dashboard#get_loans_per_week"
+      get "dashboard/loans_per_sport" => "dashboard#get_loans_per_sport"
     end
   end
 end
