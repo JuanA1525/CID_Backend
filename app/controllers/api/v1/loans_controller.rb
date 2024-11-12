@@ -3,13 +3,13 @@ class Api::V1::LoansController < ApplicationController
 
   def index
     loans = Loan.includes(:user, :equipment).all
-    render json: loans.as_json(include: [:user, :equipment])
+    render json: loans.as_json(include: [ :user, :equipment ])
   end
 
   def create
     result = LoanService.create_loan(loan_params)
     if result[:loan]
-      render json: result[:loan].as_json(include: [:user, :equipment]), status: result[:status]
+      render json: result[:loan].as_json(include: [ :user, :equipment ]), status: result[:status]
     else
       render json: result[:errors] || { error: result[:error] }, status: result[:status]
     end
@@ -18,14 +18,14 @@ class Api::V1::LoansController < ApplicationController
   def update
     result = LoanService.update_loan(@loan, loan_params)
     if result[:loan]
-      render json: result[:loan].as_json(include: [:user, :equipment]), status: result[:status]
+      render json: result[:loan].as_json(include: [ :user, :equipment ]), status: result[:status]
     else
       render json: result[:errors] || { error: result[:error] }, status: result[:status]
     end
   end
 
   def show
-    render json: @loan.as_json(include: [:user, :equipment])
+    render json: @loan.as_json(include: [ :user, :equipment ])
   end
 
   def destroy
@@ -36,6 +36,10 @@ class Api::V1::LoansController < ApplicationController
   def return_all
     result = LoanService.return_all_loans
     render json: { message: result[:message] }, status: result[:status]
+  end
+
+  def get_active_loans
+    render json: LoanService.get_active_loans
   end
 
   private

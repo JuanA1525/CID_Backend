@@ -41,6 +41,11 @@ class Api::V1::UsersController < ApplicationController
     render json: { message: "User deleted" }, status: :ok
   end
 
+  def get_loans
+    loans = UserService.get_loans(params[:id])
+    render json: loans.as_json(include: [ :equipment ])
+  end
+
   private
     def set_user
       @user = User.find(params[:id])

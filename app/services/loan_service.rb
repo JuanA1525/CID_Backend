@@ -2,6 +2,10 @@
 
 class LoanService
   def self.create_loan(params)
+    if UserService.get_loans(params[:user_id]).any? { |loan| loan.status == "active" }
+      return { error: "User already has an active loan", status: :unprocessable_entity }
+    end
+
     equipment = Equipment.find_by(id: params[:equipment_id])
 
     return { error: "Equipment not found", status: :not_found } unless equipment
@@ -54,5 +58,10 @@ class LoanService
       loan.equipment.update(available: true) if loan.equipment
     end
     { message: "All loans returned", status: :ok }
+  end
+
+  def self.get_active_loans
+    loans = Loan.includes(:user, :equipment).where(status: "active")
+    loans
   end
 end

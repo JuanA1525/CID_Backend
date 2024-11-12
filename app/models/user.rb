@@ -4,25 +4,26 @@ class User < ApplicationRecord
 
   # Associations
   belongs_to :institution
+  has_many :loans
 
   # Enums
   enum :occupation, {
-    student: 'student',
-    visitor: 'visitor',
-    graduated: 'graduated',
-    employee: 'employee'
-  }, default: 'student'
+    student: "student",
+    visitor: "visitor",
+    graduated: "graduated",
+    employee: "employee"
+  }, default: "student"
 
   enum :status, {
-    active: 'active',
-    inactive: 'inactive',
-    suspended: 'suspended'
-  }, default: 'active'
+    active: "active",
+    inactive: "inactive",
+    suspended: "suspended"
+  }, default: "active"
 
   enum :role, {
-    admin: 'admin',
-    borrower: 'borrower'
-  }, default: 'borrower'
+    admin: "admin",
+    borrower: "borrower"
+  }, default: "borrower"
 
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "It must be a valid email." }
@@ -32,7 +33,7 @@ class User < ApplicationRecord
   validates :status, presence: true
   validates :role, presence: true
   validates :institution, presence: true
-  validates :notification_pending, inclusion: { in: [true, false] }
+  validates :notification_pending, inclusion: { in: [ true, false ] }
 
   # Callbacks
   before_validation :normalize_email, :capitalize_name
@@ -44,6 +45,6 @@ class User < ApplicationRecord
     end
 
     def capitalize_name
-      self.name = name.split.map(&:capitalize).join(' ') if name.present?
+      self.name = name.split.map(&:capitalize).join(" ") if name.present?
     end
 end

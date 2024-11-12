@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       delete "users/delete/:id" => "users#destroy"
       put "users/update" => "users#update"
       get "users/:id" => "users#show"
+      get "users/:id/loans" => "users#get_loans"
 
       resources :users, only: [ :index, :show, :create, :update, :destroy ]
 
@@ -46,6 +47,7 @@ Rails.application.routes.draw do
       resources :loans do
         collection do
           put "return_all", to: "loans#return_all"
+          get "active", to: "loans#get_active_loans"
         end
       end
     end
