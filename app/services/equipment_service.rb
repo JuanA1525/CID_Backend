@@ -2,7 +2,7 @@
 
 class EquipmentService
   def self.index
-    equipment = Equipment.all
+    equipment = Equipment.order(created_at: :desc)
     equipment_with_names = equipment.map do |eq|
       name = "#{eq.equipment_type}_#{eq.sport.name}_#{eq.id}"
       sport = eq.sport.name
@@ -11,8 +11,8 @@ class EquipmentService
     equipment_with_names
   end
 
-  def self.available
-    equipment = Equipment.includes(:sport).where(available: true)
+  def self.index
+    equipment = Equipment.order(created_at: :desc)
     equipment_with_names = equipment.map do |eq|
       name = "#{eq.equipment_type}_#{eq.sport.name}_#{eq.id}"
       sport = eq.sport.name

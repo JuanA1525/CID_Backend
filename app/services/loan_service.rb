@@ -52,7 +52,7 @@ class LoanService
   end
 
   def self.return_all_loans
-    loans = Loan.includes(:equipment).where(status: "active")
+    loans = Loan.includes(:equipment).where(status: "active").order(created_at: :desc)
     loans.each do |loan|
       loan.update(status: "returned", return_date: Time.current)
       loan.equipment.update(available: true) if loan.equipment
@@ -61,7 +61,7 @@ class LoanService
   end
 
   def self.get_active_loans
-    loans = Loan.includes(:user, :equipment).where(status: "active")
+    loans = Loan.includes(:user, :equipment).where(status: "active").order(created_at: :desc)
     loans
   end
 end

@@ -2,8 +2,8 @@ class Api::V1::LoansController < ApplicationController
   before_action :set_loan, only: %i[ show update destroy ]
 
   def index
-    loans = Loan.includes(:user, :equipment).all
-    render json: loans.as_json(include: [ :user, :equipment ])
+    loans = Loan.includes(:user, :equipment).order(created_at: :desc)
+    render json: loans.as_json(include: [:user, :equipment])
   end
 
   def create
