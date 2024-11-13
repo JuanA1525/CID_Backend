@@ -4,6 +4,6 @@ class MessageRecipient < ApplicationRecord
   belongs_to :user
 
   # Validations
-  validates :message, presence: true
-  validates :user, presence: true
+  validates :message_id, presence: true
+  validates :user_id, presence: true
 end

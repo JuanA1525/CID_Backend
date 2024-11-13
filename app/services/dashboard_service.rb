@@ -128,4 +128,103 @@ class DashboardService
       status: :ok
     }
   end
+
+  def self.get_top_five_users_with_more_loans
+    users = User.joins(:loans).group(:id).order("count(loans.id) DESC").limit(5)
+    data = users.map do |user|
+      { name: user.name, value: user.loans.count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_top_five_users_with_more_ratings
+    users = User.joins(loans: :rating).group('users.id').order('COUNT(ratings.id) DESC').limit(5)
+    data = users.map do |user|
+      { name: user.name, value: user.loans.joins(:rating).count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_users_per_status
+    users = User.group(:status).count
+    data = users.map do |status, count|
+      { name: status, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_users_per_role
+    users = User.group(:role).count
+    data = users.map do |role, count|
+      { name: role, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_users_per_occupation
+    users = User.group(:occupation).count
+    data = users.map do |occupation, count|
+      { name: occupation, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_equipment_per_type
+    equipments = Equipment.group(:equipment_type).count
+    data = equipments.map do |type, count|
+      { name: type, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_equipment_per_condition
+    equipments = Equipment.group(:condition).count
+    data = equipments.map do |condition, count|
+      { name: condition, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_loans_per_status
+    loans = Loan.group(:status).count
+    data = loans.map do |status, count|
+      { name: status, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_loans_per_rating
+    ratings = Rating.group(:score).count
+    data = ratings.map do |score, count|
+      { name: score, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
 end

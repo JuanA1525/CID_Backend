@@ -53,4 +53,49 @@ class Api::V1::DashboardController < ApplicationController
     average_rating_for_loans = DashboardService.get_average_rating_for_loans
     render json: average_rating_for_loans[:data], status: average_rating_for_loans[:status]
   end
+
+  def get_top_five_users_with_more_loans
+    top_five_users_with_more_loans = DashboardService.get_top_five_users_with_more_loans
+    render json: top_five_users_with_more_loans[:data], status: top_five_users_with_more_loans[:status]
+  end
+
+  def get_top_five_users_with_more_ratings
+    top_five_users_with_more_ratings = DashboardService.get_top_five_users_with_more_ratings
+    render json: top_five_users_with_more_ratings[:data], status: top_five_users_with_more_ratings[:status]
+  end
+
+  def get_users_per_status
+    users_per_status = DashboardService.get_users_per_status
+    render json: users_per_status[:data], status: users_per_status[:status]
+  end
+
+  def get_users_per_role
+    users_per_role = DashboardService.get_users_per_role
+    render json: users_per_role[:data], status: users_per_role[:status]
+  end
+
+  def get_users_per_occupation
+    users_per_occupation = DashboardService.get_users_per_occupation
+    render json: users_per_occupation[:data], status: users_per_occupation[:status]
+  end
+
+  def get_equipment_per_type
+    equipment_per_type = DashboardService.get_equipment_per_type
+    render json: equipment_per_type[:data], status: equipment_per_type[:status]
+  end
+
+  def get_equipment_per_condition
+    equipment_per_condition = DashboardService.get_equipment_per_condition
+    render json: equipment_per_condition[:data], status: equipment_per_condition[:status]
+  end
+
+  def get_loans_per_status
+    loans_per_status = DashboardService.get_loans_per_status
+    render json: loans_per_status[:data], status: loans_per_status[:status]
+  end
+
+  def get_loans_per_rating
+    loans_per_rating = DashboardService.get_loans_per_rating
+    render json: loans_per_rating[:data], status: loans_per_rating[:status]
+  end
 end

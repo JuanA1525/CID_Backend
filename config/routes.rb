@@ -52,6 +52,9 @@ Rails.application.routes.draw do
         end
       end
 
+      # Message routes
+      resources :messages, only: [ :index, :show, :create, :update, :destroy ]
+
       # Dashboard routes
       get "dashboard/summary" => "dashboard#get_summary"
       get "dashboard/loans_info" => "dashboard#get_loans_info"
@@ -64,6 +67,15 @@ Rails.application.routes.draw do
       get "dashboard/average_rating_per_sport" => "dashboard#get_average_rating_per_sport"
       get "dashboard/average_rating_per_equipment" => "dashboard#get_average_rating_per_equipment"
       get "dashboard/average_rating_for_loans" => "dashboard#get_average_rating_for_loans"
+      get "dashboard/top_five_users_with_more_loans" => "dashboard#get_top_five_users_with_more_loans"
+      get "dashboard/top_five_users_with_more_ratings" => "dashboard#get_top_five_users_with_more_ratings"
+      get "dashboard/users_per_status" => "dashboard#get_users_per_status"
+      get "dashboard/users_per_role" => "dashboard#get_users_per_role"
+      get "dashboard/users_per_occupation" => "dashboard#get_users_per_occupation"
+      get "dashboard/equipment_per_type" => "dashboard#get_equipment_per_type"
+      get "dashboard/equipment_per_condition" => "dashboard#get_equipment_per_condition"
+      get "dashboard/loans_per_status" => "dashboard#get_loans_per_status"
+      get "dashboard/loans_per_rating" => "dashboard#get_loans_per_rating"
 
     end
   end

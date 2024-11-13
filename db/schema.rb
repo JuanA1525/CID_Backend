@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_13_001729) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_13_053457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_001729) do
   create_enum "condition", ["perfect", "good", "acceptable", "fair", "bad", "unusable"]
   create_enum "equipment_type", ["helmets", "knee_pads", "elbow_pads", "vests", "protectors", "weights", "dumbbells", "elastic_bands", "mat", "rope", "medicine_balls", "nets", "baskets", "goals", "hoops", "balls", "rackets", "sticks", "boards", "masks", "gloves"]
   create_enum "loan_status", ["active", "returned", "expired"]
+  create_enum "message_type", ["information", "warning", "error"]
   create_enum "name", ["administrator", "borrower"]
   create_enum "occupation", ["student", "visitor", "graduated", "employee"]
   create_enum "pqrsf_type", ["petition", "complaint", "claim", "suggestion", "compliment"]
@@ -88,10 +89,10 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_001729) do
 
   create_table "messages", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.enum "type", null: false, enum_type: "equipment_type"
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "message_type", default: "information", null: false, enum_type: "message_type"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 

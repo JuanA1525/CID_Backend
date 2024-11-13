@@ -5,6 +5,10 @@ class User < ApplicationRecord
   # Associations
   belongs_to :institution
   has_many :loans
+  has_many :message_recipients
+  has_many :messages, through: :message_recipients
+  has_many :ratings, through: :loans
+
 
   # Enums
   enum :occupation, {
