@@ -1,5 +1,3 @@
-# app/services/loan_service.rb
-
 class LoanService
   def self.create_loan(params)
     if UserService.get_loans(params[:user_id]).any? { |loan| loan.status == "active" }
@@ -35,6 +33,14 @@ class LoanService
 
       if equipment && equipment.update(available: true)
         if loan.update(params)
+          MessageService.create(
+            {
+              user_id: loan.user_id,
+              content: "Thank you for using our service. Please don't forget to rate your experience.",
+              message_type: "information"
+            },
+            [loan.user_id]
+          )
           { loan: loan, status: :ok }
         else
           { errors: loan.errors, status: :unprocessable_entity }
@@ -73,5 +79,39 @@ class LoanService
     else
       { errors: new_rating.errors, status: :unprocessable_entity }
     end
+  end
+
+  def self.check_and_update_expired_loans
+    loans = Loan.includes(:equipment).where(status: "active")
+    loans.each do |loan|
+      if loan.return_due_date < Time.current
+        loan.update(status: "expired")
+
+        # Enviar mensaje al usuario con el préstamo expirado
+        MessageService.create(
+          {
+            user_id: loan.user_id,
+            content: "The time to return the loan has expired. Penalties may apply. Please make the return.",
+            message_type: "warning"
+          },
+          [loan.user_id]
+        )
+
+        # Enviar mensaje a los administradores
+        admin_ids = User.where(role: 'admin').pluck(:id)
+        MessageService.create(
+          {
+            user_id: loan.user_id,
+            content: "The loan for equipment #{loan.equipment.name} has expired. Please take necessary actions.",
+            message_type: "warning"
+          },
+          admin_ids
+        )
+      end
+    end
+  end
+
+  def self.test_schedule
+    Rails.logger.info "Schedule is working at #{Time.current}"
   end
 end

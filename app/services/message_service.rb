@@ -53,6 +53,7 @@ class MessageService
     message.message_recipients.each do |recipient|
       recipient.user.update(notification_pending: false)
     end
+    message.message_recipients.destroy_all
     message.destroy
     { message: "Message deleted", status: :ok }
   end
