@@ -51,4 +51,14 @@ class EquipmentService
   def self.destroy(equipment)
     equipment.destroy
   end
+
+  def self.available
+    equipment = Equipment.includes(:sport).where(available: true).order(created_at: :desc)
+    equipment_with_names = equipment.map do |eq|
+      name = "#{eq.equipment_type}_#{eq.sport.name}_#{eq.id}"
+      sport = eq.sport.name
+      eq.as_json.merge(name: name, sport: sport)
+    end
+    equipment_with_names
+  end
 end
