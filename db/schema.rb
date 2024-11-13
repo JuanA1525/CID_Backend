@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_31_003938) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_13_001729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_31_003938) do
   create_enum "loan_status", ["active", "returned", "expired"]
   create_enum "name", ["administrator", "borrower"]
   create_enum "occupation", ["student", "visitor", "graduated", "employee"]
+  create_enum "pqrsf_type", ["petition", "complaint", "claim", "suggestion", "compliment"]
   create_enum "role", ["admin", "borrower"]
   create_enum "status", ["active", "inactive", "suspended"]
 
@@ -96,11 +97,11 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_31_003938) do
 
   create_table "pqrsfs", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.enum "type", null: false, enum_type: "equipment_type"
     t.text "description", null: false
-    t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "pqrsf_type", default: "petition", null: false, enum_type: "pqrsf_type"
+    t.boolean "pending", default: true, null: false
     t.index ["user_id"], name: "index_pqrsfs_on_user_id"
   end
 
