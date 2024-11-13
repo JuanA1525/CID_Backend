@@ -28,22 +28,20 @@ class Api::V1::UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    # Verificar si el usuario actual es un borrower y el ID en los parámetros corresponde a su propio ID
     if @current_user.borrower? && @current_user.id != params[:id].to_i
       return render json: { error: "You can only update your own profile" }, status: :forbidden
     end
 
-    # Verificar si el usuario actual es admin
     if @current_user.admin?
-      # Permitir actualización sin requerir contraseña
       update_params = admin_update_params
     else
-      # Verificar contraseña para usuarios no admin
       unless @current_user.authenticate(params[:current_password])
         return render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
       end
       update_params = borrower_update_params
     end
+
+    update_params[:notification_pending] = params[:notification_pending] if params.key?(:notification_pending)
 
     if @user.update(update_params)
       render json: @user
