@@ -2,14 +2,14 @@ class Api::V1::LoansController < ApplicationController
   before_action :set_loan, only: %i[ show update destroy ]
 
   def index
-    loans = Loan.includes(:user, :equipment).order(created_at: :desc)
-    render json: loans.as_json(include: [:user, :equipment])
+    loans = Loan.includes(:user, :equipment, :rating).order(created_at: :desc)
+    render json: loans.as_json(include: [:user, :equipment, :rating])
   end
 
   def create
     result = LoanService.create_loan(loan_params)
     if result[:loan]
-      render json: result[:loan].as_json(include: [ :user, :equipment ]), status: result[:status]
+      render json: result[:loan].as_json(include: [ :user, :equipment, :rating ]), status: result[:status]
     else
       render json: result[:errors] || { error: result[:error] }, status: result[:status]
     end
@@ -18,14 +18,14 @@ class Api::V1::LoansController < ApplicationController
   def update
     result = LoanService.update_loan(@loan, loan_params)
     if result[:loan]
-      render json: result[:loan].as_json(include: [ :user, :equipment ]), status: result[:status]
+      render json: result[:loan].as_json(include: [ :user, :equipment, :rating ]), status: result[:status]
     else
       render json: result[:errors] || { error: result[:error] }, status: result[:status]
     end
   end
 
   def show
-    render json: @loan.as_json(include: [ :user, :equipment ])
+    render json: @loan.as_json(include: [ :user, :equipment, :rating ])
   end
 
   def destroy
@@ -40,6 +40,16 @@ class Api::V1::LoansController < ApplicationController
 
   def get_active_loans
     render json: LoanService.get_active_loans
+  end
+
+  def add_rating_to_loan
+    loan = Loan.find(params[:id])
+    result = LoanService.add_rating_to_loan(loan, params.permit(:score, :comment))
+    if result[:rating]
+      render json: result[:rating], status: result[:status]
+    else
+      render json: result[:errors], status: result[:status]
+    end
   end
 
   private

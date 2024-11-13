@@ -2,6 +2,7 @@ class Loan < ApplicationRecord
   # Associations
   belongs_to :user
   belongs_to :equipment
+  has_one :rating
 
   # Enums
   enum :status, {

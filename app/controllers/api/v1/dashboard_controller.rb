@@ -38,4 +38,19 @@ class Api::V1::DashboardController < ApplicationController
     loans_per_sport = DashboardService.get_loans_per_sport
     render json: loans_per_sport[:data], status: loans_per_sport[:status]
   end
+
+  def get_average_rating_per_sport
+    average_rating_per_sport = DashboardService.get_average_rating_per_sport
+    render json: average_rating_per_sport[:data], status: average_rating_per_sport[:status]
+  end
+
+  def get_average_rating_per_equipment
+    average_rating_per_equipment = DashboardService.get_average_rating_per_equipment
+    render json: average_rating_per_equipment[:data], status: average_rating_per_equipment[:status]
+  end
+
+  def get_average_rating_for_loans
+    average_rating_for_loans = DashboardService.get_average_rating_for_loans
+    render json: average_rating_for_loans[:data], status: average_rating_for_loans[:status]
+  end
 end

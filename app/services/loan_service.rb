@@ -64,4 +64,14 @@ class LoanService
     loans = Loan.includes(:user, :equipment).where(status: "active").order(created_at: :desc)
     loans
   end
+
+  def self.add_rating_to_loan(loan, rating_params)
+    new_rating = Rating.new(rating_params)
+    new_rating.loan = loan
+    if new_rating.save
+      { rating: new_rating, status: :created }
+    else
+      { errors: new_rating.errors, status: :unprocessable_entity }
+    end
+  end
 end

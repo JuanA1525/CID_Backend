@@ -48,6 +48,7 @@ Rails.application.routes.draw do
         collection do
           put "return_all", to: "loans#return_all"
           get "active", to: "loans#get_active_loans"
+          post ":id/rate", to: "loans#add_rating_to_loan"
         end
       end
 
@@ -60,6 +61,10 @@ Rails.application.routes.draw do
       get "dashboard/loans_per_day" => "dashboard#get_loans_per_day"
       get "dashboard/loans_per_week" => "dashboard#get_loans_per_week"
       get "dashboard/loans_per_sport" => "dashboard#get_loans_per_sport"
+      get "dashboard/average_rating_per_sport" => "dashboard#get_average_rating_per_sport"
+      get "dashboard/average_rating_per_equipment" => "dashboard#get_average_rating_per_equipment"
+      get "dashboard/average_rating_for_loans" => "dashboard#get_average_rating_for_loans"
+
     end
   end
 end
