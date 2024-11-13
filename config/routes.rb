@@ -53,7 +53,11 @@ Rails.application.routes.draw do
       end
 
       # Message routes
-      resources :messages, only: [ :index, :show, :create, :update, :destroy ]
+      resources :messages do
+        collection do
+          get 'user_messages/:user_id', to: 'messages#get_messages_by_user'
+        end
+      end
 
       # Dashboard routes
       get "dashboard/summary" => "dashboard#get_summary"

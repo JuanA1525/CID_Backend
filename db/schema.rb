@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_13_053457) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_13_085052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_053457) do
   create_enum "name", ["administrator", "borrower"]
   create_enum "occupation", ["student", "visitor", "graduated", "employee"]
   create_enum "pqrsf_type", ["petition", "complaint", "claim", "suggestion", "compliment"]
+  create_enum "recipient_category", ["individual", "all_users", "active_loans"]
   create_enum "role", ["admin", "borrower"]
   create_enum "status", ["active", "inactive", "suspended"]
 
@@ -83,6 +84,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_053457) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "recipient_category", default: "individual", null: false, enum_type: "recipient_category"
     t.index ["message_id"], name: "index_message_recipients_on_message_id"
     t.index ["user_id"], name: "index_message_recipients_on_user_id"
   end

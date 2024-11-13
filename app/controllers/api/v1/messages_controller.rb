@@ -34,6 +34,12 @@ class Api::V1::MessagesController < ApplicationController
     render json: { message: result[:message] }, status: result[:status]
   end
 
+  def get_messages_by_user
+    user_id = params[:user_id]
+    messages = MessageService.get_messages_by_user(user_id)
+    render json: messages.as_json(include: { message_recipients: { only: :user_id } })
+  end
+
   private
 
   def set_message
