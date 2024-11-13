@@ -32,16 +32,15 @@ class Api::V1::UsersController < ApplicationController
       return render json: { error: "You can only update your own profile" }, status: :forbidden
     end
 
-    if @current_user.admin?
-      update_params = admin_update_params
+    if params.key?(:notification_pending)
+      update_params = { notification_pending: params[:notification_pending] }
     else
-      unless @current_user.authenticate(params[:current_password])
-        return render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
-      end
-      update_params = borrower_update_params
+      update_params = user_update_params
     end
 
-    update_params[:notification_pending] = params[:notification_pending] if params.key?(:notification_pending)
+    if update_params.key?(:password) && !@current_user.authenticate(params[:current_password])
+      return render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
+    end
 
     if @user.update(update_params)
       render json: @user
@@ -73,15 +72,9 @@ class Api::V1::UsersController < ApplicationController
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending, :role)
   end
 
-  def admin_update_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :role, :institution_id, :notification_pending)
-  end
-
-  def borrower_update_params
-    if params[:user][:password].present? && params[:user][:password].blank?
-      params[:user].delete(:password)
-      params[:user].delete(:password_confirmation)
-    end
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending)
+  def user_update_params
+    permitted_params = [:name, :email, :occupation, :status, :institution_id, :notification_pending]
+    permitted_params += [:password, :password_confirmation] if params[:user][:password].present?
+    params.require(:user).permit(permitted_params)
   end
 end
