@@ -6,6 +6,26 @@ class PqrsfService
   def self.create(params)
     pqrsf = Pqrsf.new(params)
     if pqrsf.save
+      MessageService.create(
+        {
+          user_id: pqrsf.user_id,
+          content: "Your #{pqrsf.pqrsf_type} has been successfully received and will be addressed as soon as possible.",
+          message_type: "information"
+        },
+        [ pqrsf.user_id ]
+      )
+
+      user = User.find(pqrsf.user_id)
+      admin_ids = User.where(role: "admin").pluck(:id)
+      MessageService.create(
+        {
+          user_id: pqrsf.user_id,
+          content: "A new PQRSF (#{pqrsf.pqrsf_type}) made by the user with email #{user.email} has been created and needs to be addressed.",
+          message_type: "warning"
+        },
+        admin_ids
+      )
+
       { pqrsf: pqrsf, status: :created }
     else
       { errors: pqrsf.errors, status: :unprocessable_entity }

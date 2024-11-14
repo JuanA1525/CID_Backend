@@ -5,9 +5,9 @@ class Message < ApplicationRecord
 
   # Enums
   enum :message_type, {
-    information: 'information',
-    warning: 'warning',
-    error: 'error'
+    information: "information",
+    warning: "warning",
+    error: "error"
   }
 
   # Validations

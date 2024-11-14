@@ -1,7 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
   before_action :authenticate_request, only: %i[update]
-  skip_before_action :authenticate_request, only: [:create]
+  skip_before_action :authenticate_request, only: [ :create ]
 
   # GET /users
   def index
@@ -20,6 +20,17 @@ class Api::V1::UsersController < ApplicationController
 
     if @user.save
       token = JsonWebToken.jwt_encode(user_id: @user.id)
+
+      # Enviar mensaje de bienvenida
+      MessageService.create(
+        {
+          user_id: @user.id,
+          content: "Welcome to our service! We're glad to have you with us.",
+          message_type: "information"
+        },
+        [ @user.id ]
+      )
+
       render json: { token: token }, status: :created
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
@@ -57,7 +68,7 @@ class Api::V1::UsersController < ApplicationController
 
   def get_loans
     loans = UserService.get_loans(params[:id])
-    render json: loans.as_json(include: [:equipment])
+    render json: loans.as_json(include: [ :equipment ])
   end
 
   private
@@ -73,8 +84,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_update_params
-    permitted_params = [:name, :email, :occupation, :status, :institution_id, :notification_pending]
-    permitted_params += [:password, :password_confirmation] if params[:user][:password].present?
+    permitted_params = [ :name, :email, :occupation, :status, :institution_id, :notification_pending ]
+    permitted_params += [ :password, :password_confirmation ] if params[:user][:password].present?
     params.require(:user).permit(permitted_params)
   end
 end
