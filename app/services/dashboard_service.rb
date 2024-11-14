@@ -9,6 +9,7 @@ class DashboardService
       ],
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar el resumen de conteos.
   end
 
   def self.get_loans_info
@@ -20,6 +21,7 @@ class DashboardService
       ],
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar el estado de los préstamos.
   end
 
   def self.get_equipment_info
@@ -36,6 +38,7 @@ class DashboardService
       ],
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar la disponibilidad y condición del equipo.
   end
 
   def self.get_equipment_per_sport
@@ -47,6 +50,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar el equipo por deporte.
   end
 
   def self.get_loans_per_month
@@ -58,6 +62,7 @@ class DashboardService
       data: formatted_loans,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los préstamos por mes.
   end
 
   def self.get_loans_per_day
@@ -69,6 +74,7 @@ class DashboardService
       data: formatted_loans,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los préstamos por día.
   end
 
   def self.get_loans_per_week
@@ -80,6 +86,7 @@ class DashboardService
       data: formatted_loans,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los préstamos por semana.
   end
 
   def self.get_loans_per_sport
@@ -91,6 +98,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los préstamos por deporte.
   end
 
   def self.get_average_rating_per_sport
@@ -104,6 +112,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar la calificación promedio por deporte.
   end
 
   def self.get_average_rating_per_equipment
@@ -118,6 +127,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar la calificación promedio por equipo.
   end
 
   def self.get_average_rating_for_loans
@@ -127,6 +137,7 @@ class DashboardService
       data: average,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar la calificación promedio de los préstamos.
   end
 
   def self.get_top_five_users_with_more_loans
@@ -138,6 +149,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar los cinco usuarios con más préstamos.
   end
 
   def self.get_top_five_users_with_more_ratings
@@ -149,6 +161,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar los cinco usuarios con más calificaciones.
   end
 
   def self.get_users_per_status
@@ -160,6 +173,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los usuarios por estado.
   end
 
   def self.get_users_per_role
@@ -171,6 +185,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los usuarios por rol.
   end
 
   def self.get_users_per_occupation
@@ -182,6 +197,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los usuarios por ocupación.
   end
 
   def self.get_equipment_per_type
@@ -193,6 +209,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar el equipo por tipo.
   end
 
   def self.get_equipment_per_condition
@@ -204,6 +221,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar el equipo por condición.
   end
 
   def self.get_loans_per_status
@@ -215,6 +233,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los préstamos por estado.
   end
 
   def self.get_loans_per_rating
@@ -226,6 +245,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras para mostrar los préstamos por calificación.
   end
 
   def self.get_pqrsf_per_type
@@ -237,6 +257,7 @@ class DashboardService
       data: data,
       status: :ok
     }
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los PQRSF por tipo.
   end
 
   def self.get_pqrsf_per_pending
@@ -247,6 +268,7 @@ class DashboardService
       { name: "Pending", value: pending_count },
       { name: "Adressed", value: not_pending_count }
     ]
+    # Recomendado: Gráfico de barras o gráfico de pastel para mostrar los PQRSF pendientes y atendidos.
   end
 
   def self.get_pqrsf_per_week
@@ -258,6 +280,7 @@ class DashboardService
       data: formatted_pqrsfs,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los PQRSF por semana.
   end
 
   def self.get_pqrsf_per_day
@@ -269,6 +292,7 @@ class DashboardService
       data: formatted_pqrsfs,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los PQRSF por día.
   end
 
   def self.get_pqrsf_per_month
@@ -280,5 +304,6 @@ class DashboardService
       data: formatted_pqrsfs,
       status: :ok
     }
+    # Recomendado: Gráfico de líneas o gráfico de barras para mostrar los PQRSF por mes.
   end
 end
