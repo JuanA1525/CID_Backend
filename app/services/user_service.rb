@@ -1,17 +1,22 @@
 class UserService
-  def self.index
+  # Obtener todos los usuarios
+  def self.get_all_users
     User.all
   end
 
-  def self.show(user_id)
+  # Encontrar un usuario específico
+  def self.find_user(user_id)
     User.find(user_id)
   end
 
-  def self.create(params)
-    user = User.new(params)
+  # Crear un nuevo usuario con token de bienvenida
+  def self.create_user(user_params)
+    user = User.new(user_params)
+
     if user.save
       token = JsonWebToken.jwt_encode(user_id: user.id)
 
+      # Enviar mensaje de bienvenida
       MessageService.create(
         {
           user_id: user.id,
@@ -21,55 +26,57 @@ class UserService
         [ user.id ]
       )
 
-      { user: user, token: token, status: :created }
+      { success: true, token: token }
     else
-      { errors: user.errors.full_messages, status: :unprocessable_entity }
+      { success: false, errors: user.errors.full_messages }
     end
   end
 
-  def self.update(current_user, user, params)
+  # Actualizar el perfil del usuario
+  def self.update_user(current_user, user, params)
+    # Permitir actualizar `notification_pending` sin autenticación
+    if params.key?(:notification_pending) && params.keys.length == 1
+      if user.update(notification_pending: params[:notification_pending])
+        return { success: true, user: user }
+      else
+        return { success: false, user: user }
+      end
+    end
+
+    # Validación de permisos para borrower
     if current_user.borrower? && current_user.id != user.id
-      return { error: "You can only update your own profile", status: :forbidden }
+      return { success: false, error: "You can only update your own profile" }
     end
 
-    if params.key?(:notification_pending)
-      update_params = { notification_pending: params[:notification_pending] }
-    else
-      update_params = user_update_params(params)
+    # Verificación de contraseña solo si desea cambiarla
+    if params[:user][:password].present? && !current_user.authenticate(params[:current_password])
+      return { success: false, error: "Current password is incorrect" }
     end
 
-    if update_params.key?(:password) && !current_user.authenticate(params[:current_password])
-      return { error: "Current password is incorrect", status: :unprocessable_entity }
-    end
-
+    # Configuración de parámetros de actualización
+    update_params = build_update_params(current_user, params)
     if user.update(update_params)
-      { user: user, status: :ok }
+      { success: true, user: user }
     else
-      { errors: user.errors, status: :unprocessable_entity }
+      { success: false, user: user }
     end
   end
 
-  def self.destroy(user)
+  # Eliminar un usuario
+  def self.destroy_user(user)
     user.destroy!
-    { message: "User deleted", status: :ok }
   end
 
+  # Obtener préstamos de un usuario
   def self.get_loans(user_id)
-    loans = UserService.get_loans(user_id)
-    loans.as_json(include: [ :equipment ])
+    user = find_user(user_id)
+    user.loans
   end
 
-  private
-
-  def self.user_update_params(params)
+  # Construir parámetros de actualización para el usuario
+  def self.build_update_params(current_user, params)
     permitted_params = [ :name, :email, :occupation, :status, :institution_id, :notification_pending ]
-    permitted_params += [ :password, :password_confirmation ] if params[:password].present?
-    params.permit(permitted_params)
-  end
-
-  def self.get_loans(user_id)
-    user = User.find(user_id)
-    loans = user.loans.order(created_at: :desc)
-    loans
+    permitted_params += [ :password, :password_confirmation ] if params[:user][:password].present?
+    params.require(:user).permit(permitted_params)
   end
 end
