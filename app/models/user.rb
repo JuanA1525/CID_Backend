@@ -38,13 +38,14 @@ class User < ApplicationRecord
   validates :role, presence: true
   validates :institution, presence: true
   validates :notification_pending, inclusion: { in: [ true, false ] }
+  validates :rating_pending, inclusion: { in: [ true, false ] }
 
   # Callbacks
   before_validation :normalize_email, :capitalize_name
 
   # Methods
   def admin?
-    role == 'admin'
+    role == "admin"
   end
 
   private

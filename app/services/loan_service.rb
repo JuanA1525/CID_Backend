@@ -33,6 +33,11 @@ class LoanService
 
       if equipment && equipment.update(available: true)
         if loan.update(params)
+          # Actualizar el campo rating_pending del usuario a true
+          user = loan.user
+          user.update(rating_pending: true)
+
+          # Enviar mensaje al usuario
           MessageService.create(
             {
               user_id: loan.user_id,

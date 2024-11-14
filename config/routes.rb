@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       put "users/:id" => "users#update"
       get "users/:id" => "users#show"
       get "users/:id/loans" => "users#get_loans"
+      get "users/:id/last_loan" => "users#get_last_loan"
 
       resources :users, only: [ :index, :show, :create, :update, :destroy ]
 

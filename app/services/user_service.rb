@@ -39,7 +39,16 @@ class UserService
       if user.update(notification_pending: params[:notification_pending])
         return { success: true, user: user }
       else
-        return { success: false, user: user }
+        return { success: false, errors: user.errors.full_messages }
+      end
+    end
+
+    # Permitir actualizar `rating_pending` sin autenticación
+    if params.key?(:rating_pending) && params.keys.length == 1
+      if user.update(rating_pending: params[:rating_pending])
+        return { success: true, user: user }
+      else
+        return { success: false, errors: user.errors.full_messages }
       end
     end
 
@@ -54,28 +63,34 @@ class UserService
     end
 
     # Configuración de parámetros de actualización
-    update_params = build_update_params(current_user, params)
+    update_params = build_update_params(params)
     if user.update(update_params)
       { success: true, user: user }
     else
-      { success: false, user: user }
+      { success: false, errors: user.errors.full_messages }
     end
   end
 
   # Eliminar un usuario
   def self.destroy_user(user)
     user.destroy!
+    { success: true, message: "User deleted" }
   end
 
   # Obtener préstamos de un usuario
   def self.get_loans(user_id)
     user = find_user(user_id)
-    user.loans
+    user.loans.includes(:equipment).order(created_at: :desc)
+  end
+
+  def self.get_last_loan(user_id)
+    user = find_user(user_id)
+    user.loans.includes(:equipment).order(created_at: :desc).first
   end
 
   # Construir parámetros de actualización para el usuario
-  def self.build_update_params(current_user, params)
-    permitted_params = [ :name, :email, :occupation, :status, :institution_id, :notification_pending ]
+  def self.build_update_params(params)
+    permitted_params = [ :name, :email, :occupation, :status, :institution_id, :notification_pending, :rating_pending, :role ]
     permitted_params += [ :password, :password_confirmation ] if params[:user][:password].present?
     params.require(:user).permit(permitted_params)
   end

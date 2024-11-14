@@ -45,6 +45,11 @@ class Api::V1::UsersController < ApplicationController
     render json: loans.as_json(include: [ :equipment ])
   end
 
+  def get_last_loan
+    loan = UserService.get_last_loan(params[:id])
+    render json: loan.as_json(include: [ :equipment, :rating ])
+  end
+
   private
 
   def set_user
@@ -54,6 +59,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending, :role)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :occupation, :status, :institution_id, :notification_pending, :rating_pending, :role)
   end
 end
