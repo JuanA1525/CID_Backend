@@ -3,8 +3,8 @@ class Pqrsf < ApplicationRecord
   belongs_to :user
 
   # Enums
-  enum pqrsf_type: {
-    request: "request",
+  enum :pqrsf_type, {
+    petition: "petition",
     complaint: "complaint",
     claim: "claim",
     suggestion: "suggestion",
@@ -15,6 +15,6 @@ class Pqrsf < ApplicationRecord
   validates :user, presence: true
   validates :pqrsf_type, presence: true
   validates :description, presence: true
-  validates :pending, presence: true, inclusion: { in: [ true, false ] }
+  validates :pending, inclusion: { in: [ true, false ] }
   validates :subject, presence: true
 end

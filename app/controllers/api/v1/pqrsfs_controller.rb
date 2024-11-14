@@ -1,4 +1,4 @@
-class Api::V1::PqrsfController < ApplicationController
+class Api::V1::PqrsfsController < ApplicationController
   before_action :set_pqrsf, only: %i[show update destroy]
 
   def index

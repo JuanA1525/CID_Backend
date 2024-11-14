@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_14_155942) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_14_165232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -105,6 +105,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_14_155942) do
     t.datetime "updated_at", null: false
     t.enum "pqrsf_type", default: "petition", null: false, enum_type: "pqrsf_type"
     t.boolean "pending", default: true, null: false
+    t.string "subject", null: false
     t.index ["user_id"], name: "index_pqrsfs_on_user_id"
   end
 
