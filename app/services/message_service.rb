@@ -1,6 +1,6 @@
 class MessageService
   def self.index
-    Message.includes(:message_recipients).all
+    Message.includes(:message_recipients).order(created_at: :desc)
   end
 
   def self.show(id)
@@ -59,10 +59,10 @@ class MessageService
   end
 
   def self.get_messages_by_user(user_id)
-    messages = Message.joins(:message_recipients)
-                      .where(message_recipients: { user_id: user_id })
-                      .or(Message.joins(:message_recipients).where(message_recipients: { user_id: nil }).where("message_recipients.recipient_category = 'all_users' OR message_recipients.recipient_category = 'active_loans'"))
-                      .distinct
-    messages
+    Message.joins(:message_recipients)
+           .where(message_recipients: { user_id: user_id })
+           .or(Message.joins(:message_recipients).where(message_recipients: { user_id: nil }).where("message_recipients.recipient_category = 'all_users' OR message_recipients.recipient_category = 'active_loans'"))
+           .order(created_at: :desc)
+           .distinct
   end
 end

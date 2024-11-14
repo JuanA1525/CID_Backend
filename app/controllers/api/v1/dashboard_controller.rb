@@ -98,4 +98,29 @@ class Api::V1::DashboardController < ApplicationController
     loans_per_rating = DashboardService.get_loans_per_rating
     render json: loans_per_rating[:data], status: loans_per_rating[:status]
   end
+
+  def get_pqrsf_per_type
+    pqrsfs = DashboardService.get_pqrsf_per_type
+    render json: pqrsfs[:data], status: pqrsfs[:status]
+  end
+
+  def get_pqrsf_per_pending
+    pqrsfs = DashboardService.get_pqrsf_per_pending
+    render json: pqrsfs, status: :ok
+  end
+
+  def get_pqrsf_per_week
+    pqrsfs = DashboardService.get_pqrsf_per_week
+    render json: pqrsfs[:data], status: pqrsfs[:status]
+  end
+
+  def get_pqrsf_per_day
+    pqrsfs = DashboardService.get_pqrsf_per_day
+    render json: pqrsfs[:data], status: pqrsfs[:status]
+  end
+
+  def get_pqrsf_per_month
+    pqrsfs = DashboardService.get_pqrsf_per_month
+    render json: pqrsfs[:data], status: pqrsfs[:status]
+  end
 end

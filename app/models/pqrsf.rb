@@ -4,11 +4,11 @@ class Pqrsf < ApplicationRecord
 
   # Enums
   enum pqrsf_type: {
-    request: 'request',
-    complaint: 'complaint',
-    claim: 'claim',
-    suggestion: 'suggestion',
-    compliment: 'compliment'
+    request: "request",
+    complaint: "complaint",
+    claim: "claim",
+    suggestion: "suggestion",
+    compliment: "compliment"
   }
 
   # Validations
@@ -16,4 +16,5 @@ class Pqrsf < ApplicationRecord
   validates :pqrsf_type, presence: true
   validates :description, presence: true
   validates :pending, presence: true, inclusion: { in: [ true, false ] }
+  validates :subject, presence: true
 end

@@ -24,4 +24,19 @@ class PqrsfService
     pqrsf.destroy
     { message: "Pqrsf deleted", status: :ok }
   end
+
+  def self.get_pqrsf_by_user(user_id)
+    pqrsf = Pqrsf.where(user_id: user_id).order(created_at: :desc)
+    pqrsf
+  end
+
+  def self.get_pending_pqrsf
+    pqrsf = Pqrsf.where(status: "pending").order(created_at: :desc)
+    pqrsf
+  end
+
+  def self.get_pqrsf_per_type(pqrsf_type)
+    pqrsf = Pqrsf.where(pqrsf_type: pqrsf_type).order(created_at: :desc)
+    pqrsf
+  end
 end

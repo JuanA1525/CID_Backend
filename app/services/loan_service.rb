@@ -39,7 +39,7 @@ class LoanService
               content: "Thank you for using our service. Please don't forget to rate your experience.",
               message_type: "information"
             },
-            [loan.user_id]
+            [ loan.user_id ]
           )
           { loan: loan, status: :ok }
         else
@@ -87,18 +87,16 @@ class LoanService
       if loan.return_due_date < Time.current
         loan.update(status: "expired")
 
-        # Enviar mensaje al usuario con el préstamo expirado
         MessageService.create(
           {
             user_id: loan.user_id,
             content: "The time to return the loan has expired. Penalties may apply. Please make the return.",
             message_type: "warning"
           },
-          [loan.user_id]
+          [ loan.user_id ]
         )
 
-        # Enviar mensaje a los administradores
-        admin_ids = User.where(role: 'admin').pluck(:id)
+        admin_ids = User.where(role: "admin").pluck(:id)
         MessageService.create(
           {
             user_id: loan.user_id,

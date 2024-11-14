@@ -141,7 +141,7 @@ class DashboardService
   end
 
   def self.get_top_five_users_with_more_ratings
-    users = User.joins(loans: :rating).group('users.id').order('COUNT(ratings.id) DESC').limit(5)
+    users = User.joins(loans: :rating).group("users.id").order("COUNT(ratings.id) DESC").limit(5)
     data = users.map do |user|
       { name: user.name, value: user.loans.joins(:rating).count }
     end
@@ -224,6 +224,60 @@ class DashboardService
     end
     {
       data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_pqrsf_per_type
+    pqrsfs = Pqrsf.group(:pqrsf_type).count
+    data = pqrsfs.map do |type, count|
+      { name: type, value: count }
+    end
+    {
+      data: data,
+      status: :ok
+    }
+  end
+
+  def self.get_pqrsf_per_pending
+    pending_count = Pqrsf.where(pending: true).count
+    not_pending_count = Pqrsf.where(pending: false).count
+
+    [
+      { name: "Pending", value: pending_count },
+      { name: "Adressed", value: not_pending_count }
+    ]
+  end
+
+  def self.get_pqrsf_per_week
+    pqrsfs = Pqrsf.group_by_week(:created_at).count
+    formatted_pqrsfs = pqrsfs.map do |date, count|
+      { name: date.strftime("%Y-%U"), value: count }
+    end
+    {
+      data: formatted_pqrsfs,
+      status: :ok
+    }
+  end
+
+  def self.get_pqrsf_per_day
+    pqrsfs = Pqrsf.group_by_day(:created_at).count
+    formatted_pqrsfs = pqrsfs.map do |date, count|
+      { name: date.strftime("%Y-%m-%d"), value: count }
+    end
+    {
+      data: formatted_pqrsfs,
+      status: :ok
+    }
+  end
+
+  def self.get_pqrsf_per_month
+    pqrsfs = Pqrsf.group_by_month(:created_at).count
+    formatted_pqrsfs = pqrsfs.map do |date, count|
+      { name: date.strftime("%Y-%m"), value: count }
+    end
+    {
+      data: formatted_pqrsfs,
       status: :ok
     }
   end

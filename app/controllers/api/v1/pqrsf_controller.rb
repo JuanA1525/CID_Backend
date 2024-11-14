@@ -33,6 +33,22 @@ class Api::V1::PqrsfController < ApplicationController
     render json: { message: result[:message] }, status: result[:status]
   end
 
+  def get_pqrsf_by_user
+    pqrsf = PqrsfService.get_pqrsf_by_user(@current_user.id)
+    render json: pqrsf
+  end
+
+  def get_pending_pqrsf
+    pqrsf = PqrsfService.get_pending_pqrsf
+    render json: pqrsf
+  end
+
+  def get_pqrsf_per_type
+    pqrsf_type = params[:pqrsf_type]
+    pqrsf = PqrsfService.get_pqrsf_per_type(pqrsf_type)
+    render json: pqrsf
+  end
+
   private
 
   def set_pqrsf
@@ -42,6 +58,6 @@ class Api::V1::PqrsfController < ApplicationController
   end
 
   def pqrsf_params
-    params.require(:pqrsf).permit(:user_id, :pqrsf_type, :description, :pending)
+    params.require(:pqrsf).permit(:user_id, :pqrsf_type, :description, :pending, :subject)
   end
 end

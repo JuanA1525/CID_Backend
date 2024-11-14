@@ -55,7 +55,16 @@ Rails.application.routes.draw do
       # Message routes
       resources :messages do
         collection do
-          get 'user_messages/:user_id', to: 'messages#get_messages_by_user'
+          get "user_messages/:user_id", to: "messages#get_messages_by_user"
+        end
+      end
+
+      # pqrfs routes
+      resources :pqrsfs do
+        collection do
+          get "user_pqrsfs/:user_id", to: "pqrsfs#get_pqrsf_by_user"
+          get "pending_pqrsfs", to: "pqrsfs#get_pending_pqrsf"
+          get "pqrsfs_per_type/:pqrsf_type", to: "pqrsfs#get_pqrsf_per_type"
         end
       end
 
@@ -80,7 +89,11 @@ Rails.application.routes.draw do
       get "dashboard/equipment_per_condition" => "dashboard#get_equipment_per_condition"
       get "dashboard/loans_per_status" => "dashboard#get_loans_per_status"
       get "dashboard/loans_per_rating" => "dashboard#get_loans_per_rating"
-
+      get "dashboard/pqrsf_per_type" => "dashboard#get_pqrsf_per_type"
+      get "dashboard/pqrsf_per_pending" => "dashboard#get_pqrsf_per_pending"
+      get "dashboard/pqrsf_per_week" => "dashboard#get_pqrsf_per_week"
+      get "dashboard/pqrsf_per_day" => "dashboard#get_pqrsf_per_day"
+      get "dashboard/pqrsf_per_month" => "dashboard#get_pqrsf_per_month"
     end
   end
 end
